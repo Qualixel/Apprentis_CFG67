@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur d'Aides à l'Embauche d'Apprenti</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
+    <style>
+        /* Style pour l'impression (optionnel) */
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-inter antialiased">
+    <div class="container mx-auto p-6 md:p-10">
+        <div class="flex items-center mb-8">
+            <img src="https://raw.githubusercontent.com/your-username/your-repo/main/logo.png" alt="CFG Alsace" class="mr-4 h-12">
+            <h1 class="text-2xl font-semibold text-blue-600 text-center">Calculateur d'Aides à l'Embauche d'Apprenti</h1>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 no-print">
+            <form id="form-calcul" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="date-contrat" class="block text-gray-700 text-sm font-bold mb-2">Date de conclusion du contrat :</label>
+                    <input type="date" id="date-contrat" name="date-contrat" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div>
+                    <label for="niveau-diplome" class="block text-gray-700 text-sm font-bold mb-2">Niveau de diplôme de l'apprenti :</label>
+                    <select id="niveau-diplome" name="niveau-diplome" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="bac">Inférieur ou égal au Bac</option>
+                        <option value="bac+2">Bac +2 à Bac +5</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2 flex justify-center mt-4">
+                    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Calculer l'aide</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Résultat du calcul</h2>
+            <div id="resultat" class="text-gray-700 font-medium">
+                </div>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg p-4 md:p-6 no-print">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Informations complémentaires</h2>
+            <ul class="list-disc list-inside text-gray-700">
+                <li>Les montants sont valables pour la première année du contrat d'apprentissage.</li>
+                <li>L'aide est versée mensuellement par l'ASP.</li>
+                <li>L'aide n'est pas versée pour les périodes de suspension du contrat de travail lorsque la rémunération n'est pas versée.</li>
+                <li>En cas de rupture du contrat de travail, l'aide est stoppée à compter du mois suivant la date de la rupture.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const formCalcul = document.getElementById('form-calcul');
+        const resultatDiv = document.getElementById('resultat');
+
+        formCalcul.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const dateContrat = document.getElementById('date-contrat').value;
+            const niveauDiplome = document.getElementById('niveau-diplome').value;
+
+            const dateContratObj = new Date(dateContrat);
+            const debutFevrier2025 = new Date(2025, 1, 24);
+            const finDecembre2025 = new Date(2025, 11, 31);
+            const debutJanvier2023 = new Date(2023, 0, 1);
+            const finFevrier2025 = new Date(2025, 1, 23);
+            const finDecembre2024 = new Date(2024, 11, 31);
+            let aide = 0;
+
+            if (dateContratObj >= debutFevrier2025 && dateContratObj <= finDecembre2025) {
+                aide = 5000;
+            } else if (dateContratObj >= debutJanvier2023 && dateContratObj <= finFevrier2025) {
+                 if (niveauDiplome === "bac") {
+                    aide = 6000;
+                } else {
+                    aide = 0;
+                }
+            }
+
+            let message = `<p class="mb-4">Le montant de l'aide à l'embauche pour la première année du contrat est de : <span class="font-semibold text-green-600">${aide} €</span></p>`;
+
+             if (dateContratObj > finDecembre2025) {
+                message = `<p class="mb-4">Aucune aide n'est prévue pour les contrats conclus à partir de 2026.</p>`;
+            }
+            resultatDiv.innerHTML = message;
+        });
+    </script>
+</body>
+</html>
